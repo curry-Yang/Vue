@@ -126,6 +126,7 @@
 
 
     <script>
+        //使用localstorage来存储数据
         var setLocal = {
             save(key,value){
                 localStorage.setItem(key,JSON.stringify(value))
@@ -135,8 +136,10 @@
             }
         }
 
+        //从本地取数据
         var todos = setLocal.get("todos") || [];
 
+        //注册组件
         Vue.component('todo-item', { 
             props:['item','index','edittodo'],
             template: `<li>
@@ -155,6 +158,7 @@
                                    v-focus
                             >
                         </li>`,
+            //自定义指令focus，让input自动获取焦点
             directives: {
                 focus: {
                     inserted:function (el) {
@@ -177,20 +181,25 @@
                 visibility: 'all'
             },
             methods: {
+                //添加新任务
                 addNewItem: function() {
                     this.todos.push({title:this.text,isChecked:false});
                     this.text = '';
                 },
+                //删除任务
                 remove: function(index) {
                     this.todos.splice(index,1)
                 },
+                //编辑任务
                 edit: function(item) {
                     this.editTodo = item;
                     this.beforeTodo = item.title;
                 },
+                //编辑完成
                 editedTodo: function() {
                     this.editTodo = ''
                 },
+                //取消编辑
                 cancelEdit: function (item) {
                     item.title = this.beforeTodo;
                     this.beforeTodo = '';
@@ -236,10 +245,12 @@
                         setLocal.save('todos',this.todos);
                     },
                     deep:true
+                    //深度watcher
                 }
             }
         })
 
+        //通过改变location.hash的方式切换选项
         function changeHash() {
             var hash = window.location.hash.slice(1);
             vm.visibility = hash;
